@@ -19,19 +19,15 @@ def initialize_model(text, sentences, thresh):
     print("module %s loaded" % module_url)
 
     def embed(input_):
-        print(input_)
         return model(input_)
 
     def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold, rotation):
         corr = np.inner(textfeatures,sentencefeatures)
-        print("Corr is:")
-        print(corr)
-        print("Arr is:")
         x_labels =[]
         inds = np.where(abs(corr) >= abs(threshold))
         for x in sorted(inds[0], reverse=True):
             x_labels.append(textlabels.pop(x))
-        print(inds[0])
+        x_labels.reverse()
         arr = corr[np.any(abs(corr) >= abs(threshold), axis=1)]
         sns.set(font_scale=0.8)
         g = sns.heatmap(
@@ -85,7 +81,6 @@ def process_file(file, sentences_to_compare, user_threshold, start_symbol=None):
     list_of_text = []
     for parax in filtered_paras:
         list_of_text.append(parax.text)
-        print(parax.text)
 
     initialize_model(list_of_text, sentences_to_compare, user_threshold)
 
