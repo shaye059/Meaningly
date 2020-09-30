@@ -9,11 +9,8 @@ import re
 import seaborn as sns
 import docx
 
-# TODO: Restructure this so that the model is initialized once on the first run and then embed is simply called for
-#  any further comparisons. Right now the model is set up every time it is run.
 
-
-def initialize_model(text, sentences, thresh):
+def initialize_model(text, sentences):
     module_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
     model = hub.load(module_url)
     print("module %s loaded" % module_url)
@@ -22,22 +19,16 @@ def initialize_model(text, sentences, thresh):
         print(input_)
         return model(input_)
 
-    def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold, rotation):
+    def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, rotation):
         corr = np.inner(textfeatures,sentencefeatures)
-        print("Corr is:")
         print(corr)
-        print("Arr is:")
-        x_labels =[]
-        inds = np.where(abs(corr) >= abs(threshold))
-        for x in sorted(inds[0], reverse=True):
-            x_labels.append(textlabels.pop(x))
-        print(inds[0])
-        arr = corr[np.any(abs(corr) >= abs(threshold), axis=1)]
+        corr.view('i8,i8,i8').sort(order=['f1'], axis=0)
+        print(corr)
         sns.set(font_scale=0.8)
         g = sns.heatmap(
-            arr,
+            corr,
             xticklabels=sentencelabels,
-            yticklabels=x_labels,
+            yticklabels=textlabels,
             vmin=0,
             vmax=1,
             cmap="YlOrRd",
@@ -45,15 +36,15 @@ def initialize_model(text, sentences, thresh):
         g.set_xticklabels(sentencelabels, rotation=rotation)
         g.set_title("Semantic Textual Similarity")
         plt.tight_layout()
-        plt.subplots_adjust(left=0.5)
+        plt.subplots_adjust(left=0.6)
         plt.show()
 
-    def run_and_plot(text_, sentences_, threshold_):
+    def run_and_plot(text_, sentences_):
         text_embeddings_ = embed(text_)
         sentence_embeddings_ = embed(sentences_)
-        plot_similarity(text_, text_embeddings_, sentences_,sentence_embeddings_,threshold_, 0)
+        plot_similarity(text_, text_embeddings_, sentences_,sentence_embeddings_, 0)
 
-    run_and_plot(text, sentences, thresh)
+    run_and_plot(text, sentences)
 
 
 
@@ -64,7 +55,7 @@ class FileError(Exception):
 
 
 # TODO: split sentence at every ellipses, period, exclamation mark, and question mark
-def process_file(file, sentences_to_compare, user_threshold, start_symbol=None):
+def process_file(file, sentences_to_compare, start_symbol=None):
     try:
         doc = docx.Document(file)
     except docx.opc.exceptions.PackageNotFoundError:
@@ -87,7 +78,7 @@ def process_file(file, sentences_to_compare, user_threshold, start_symbol=None):
         list_of_text.append(parax.text)
         print(parax.text)
 
-    initialize_model(list_of_text, sentences_to_compare, user_threshold)
+    initialize_model(list_of_text, sentences_to_compare)
 
 
-initialize_model(['Hello, how are you?', "I'm not sure how that works.", "Hi, how's it going?"], ["Hey, what's up?","I don't know"], 0.7)
+initialize_model(['Hello, how are you?', "I'm not sure how that works.", "Hi, how's it going?"], ["Hey, what's up?"])
