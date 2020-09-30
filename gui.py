@@ -15,6 +15,7 @@ class Example(Frame):
         self.fileName = None
         self.listOfEntries = []
         self.listOfPhrases = []
+        self.threshold = None
 
         self.initUI()
 
@@ -31,7 +32,7 @@ class Example(Frame):
             else:
                 entry.delete('1.0', END)
             entry.config(highlightbackground='SystemButtonFace')
-        self.fileName = None
+        #self.fileName = None
 
     # Function for opening the
     # file explorer window
@@ -51,6 +52,7 @@ class Example(Frame):
         # Assign the entries to their respective variables
         self.fileName = self.listOfEntries[0].get()
         self.listOfPhrases = self.listOfEntries[2].get('1.0', END)
+        self.threshold = self.listOfEntries[3].get()
 
         # If there's no entry for file, show error. Otherwise clear any previous errors.
         if len(self.fileName) == 0:
@@ -64,12 +66,28 @@ class Example(Frame):
         else:
             self.listOfEntries[2].config(highlightbackground='SystemButtonFace')
 
+        # TODO: Add an option to choose between positive correlation, negative correlation, or both.
+        # If there's an entry for threshold, check to see if it's a number and if that number is between 0 and 1. If
+        # there is no entry then set threshold to default value (0)
+        if not(len(self.threshold) == 0):
+            try:
+                self.threshold = float(self.threshold)
+                if not(0 <= self.threshold <= 1):
+                    self.listOfEntries[3].config(highlightbackground='red')
+                else:
+                    self.listOfEntries[3].config(highlightbackground='SystemButtonFace')
+            except ValueError:
+                self.listOfEntries[3].config(highlightbackground='red')
+                return
+        else:
+            self.threshold = 0
+
         # If File and List of Phrases have a value, try processing the file
         if not ((len(self.fileName) == 0) or (len(self.listOfPhrases) == 1)):
             self.listOfPhrases = self.listOfPhrases.splitlines()
+
             try:
-                mn.process_file(self.fileName, self.listOfPhrases, start_symbol=':')
-                print('Done')
+                mn.process_file(self.fileName, self.listOfPhrases, self.threshold, start_symbol=':')
             except mn.FileError:
                 self.listOfEntries[0].config(highlightbackground='red')
             except FileNotFoundError:
@@ -82,7 +100,7 @@ class Example(Frame):
         frame1 = Frame(self)
         frame1.pack(fill=X)
 
-        lbl1 = Label(frame1, text="File", width=7)
+        lbl1 = Label(frame1, text="File", width=9)
         lbl1.pack(side=LEFT, padx=5, pady=5)
 
         photo = PhotoImage(file=r"foldericon.png")
@@ -100,7 +118,7 @@ class Example(Frame):
         frame2 = Frame(self)
         frame2.pack(fill=X)
 
-        lbl2 = Label(frame2, text="Symbol", width=7)
+        lbl2 = Label(frame2, text="Symbol", width=9)
         lbl2.pack(side=LEFT, padx=5, pady=5)
 
         entry2 = tk.Entry(frame2)
@@ -110,8 +128,8 @@ class Example(Frame):
         frame3 = Frame(self)
         frame3.pack(fill=X, expand=True)
 
-        lbl3 = Message(frame3, text="List of phrases", width=40)
-        lbl3.pack(side=LEFT, padx=1, pady=7)
+        lbl3 = Message(frame3, text="List of phrases", width=42)
+        lbl3.pack(side=LEFT, padx=7, pady=7)
 
         entry3 = tk.Text(frame3, height=10, highlightthickness=1)
         entry3.pack(fill=BOTH, padx=5, pady=7)
@@ -120,17 +138,27 @@ class Example(Frame):
         frame4 = Frame(self)
         frame4.pack(fill=X)
 
-        button_run = tk.Button(frame4, text='Run', width=6, bg='green', command=lambda: self.run_encoding(button_run))
+        lbl4 = Label(frame4, text="Threshold", width=9)
+        lbl4.pack(side=LEFT, padx=5, pady=5)
+
+        entry4 = tk.Entry(frame4, highlightthickness=1)
+        entry4.pack(fill=X, padx=5, expand=True)
+        self.listOfEntries.append(entry4)
+
+        frame5 = Frame(self)
+        frame5.pack(fill=X)
+
+        button_run = tk.Button(frame5, text='Run', width=6, bg='green', command=lambda: self.run_encoding(button_run))
         button_run.pack(side=RIGHT, padx=5, pady=5)
 
-        button_clear = Button(frame4, text='Clear', width=6, command=self.clear)
+        button_clear = Button(frame5, text='Clear', width=6, command=self.clear)
         button_clear.pack(side=RIGHT, padx=5, pady=5)
 
 
 def main():
     root = Tk()
     root.iconbitmap("letterm.ico")
-    root.geometry("500x300+100+100")
+    root.geometry("500x350+100+100")
     app = Example()
     root.mainloop()
     #mn.initialize_model()
