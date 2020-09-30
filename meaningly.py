@@ -21,6 +21,7 @@ def initialize_model(text, sentences, thresh):
     def embed(input_):
         return model(input_)
 
+    # TODO: Error here when user inputs more than one sentence
     def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold, rotation):
         corr = np.inner(textfeatures,sentencefeatures)
         x_labels =[]
