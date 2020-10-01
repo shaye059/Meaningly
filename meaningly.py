@@ -21,12 +21,15 @@ def initialize_model(text, sentences, thresh):
     def embed(input_):
         return model(input_)
 
-    # TODO: Error here when user inputs more than one sentence
+    # TODO: Fix bug where it adds a thermometer every time it's run
     def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold, rotation):
         corr = np.inner(textfeatures,sentencefeatures)
-        x_labels =[]
-        inds = np.where(abs(corr) >= abs(threshold))
-        for x in sorted(inds[0], reverse=True):
+        print(corr)
+        x_labels = []
+        inds = np.where(abs(corr) >= abs(threshold))[0]
+        inds = list(set(inds))
+        print(inds)
+        for x in sorted(inds, reverse=True):
             x_labels.append(textlabels.pop(x))
         x_labels.reverse()
         arr = corr[np.any(abs(corr) >= abs(threshold), axis=1)]
