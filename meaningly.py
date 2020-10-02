@@ -21,14 +21,16 @@ def initialize_model(text, sentences, thresh):
     def embed(input_):
         return model(input_)
 
-    # TODO: Fix bug where it adds a thermometer every time it's run
+    # TODO: Join corresponding labels and features together in a tuple so that features can be sorted by correlation and
+    #  the labels will be sorted with them.
     def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold, rotation):
+        plt.figure()
         corr = np.inner(textfeatures,sentencefeatures)
-        print(corr)
+        #print(corr)
         x_labels = []
         inds = np.where(abs(corr) >= abs(threshold))[0]
         inds = list(set(inds))
-        print(inds)
+        #print(inds)
         for x in sorted(inds, reverse=True):
             x_labels.append(textlabels.pop(x))
         x_labels.reverse()
@@ -88,5 +90,5 @@ def process_file(file, sentences_to_compare, user_threshold, start_symbol=None):
 
     initialize_model(list_of_text, sentences_to_compare, user_threshold)
 
-
-initialize_model(['Hello, how are you?', "I'm not sure how that works.", "Hi, how's it going?"], ["Hey, what's up?","I don't know"], 0.7)
+# For quick testing without the GUI:
+#initialize_model(['Hello, how are you?', "I'm not sure how that works.", "Hi, how's it going?"], ["Hey, what's up?","I don't know"], 0)
