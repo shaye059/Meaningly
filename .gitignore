@@ -1,3 +1,5 @@
-/venv/
+venv/
 /scrap.py
-venv
+#venv
+dist
+build
