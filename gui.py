@@ -1,14 +1,14 @@
 import tkinter as tk
-from tkinter import Tk, BOTH, X, LEFT, RIGHT, PhotoImage, filedialog, END, Message
+from tkinter import Tk, BOTH, X, LEFT, RIGHT, PhotoImage, filedialog, END, Message, RAISED
 from tkinter.ttk import Frame, Label, Button
 import meaningly as mn
 
 
-# Function for opening the
-# file explorer window
+# Splash screen
 
 
-class Example(Frame):
+#Main app
+class UserInterface(Frame):
 
     def __init__(self):
         super().__init__()
@@ -18,6 +18,7 @@ class Example(Frame):
         self.threshold = None
 
         self.initUI()
+        self.meaningly = mn.Meaningly()
 
     # Setting the filename
     def set_file(self, filename):
@@ -87,7 +88,7 @@ class Example(Frame):
             self.listOfPhrases = self.listOfPhrases.splitlines()
 
             try:
-                mn.process_file(self.fileName, self.listOfPhrases, self.threshold, start_symbol=':')
+                self.meaningly.process_run_plot(self.fileName, self.listOfPhrases, self.threshold, start_symbol=':')
             except mn.FileError:
                 self.listOfEntries[0].config(highlightbackground='red')
             except FileNotFoundError:
@@ -159,9 +160,8 @@ def main():
     root = Tk()
     root.iconbitmap("letterm.ico")
     root.geometry("500x350+100+100")
-    app = Example()
+    app = UserInterface()
     root.mainloop()
-    #mn.initialize_model()
 
 
 if __name__ == '__main__':
