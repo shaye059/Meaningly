@@ -2,16 +2,30 @@ import tkinter as tk
 from tkinter import Tk, BOTH, X, LEFT, RIGHT, PhotoImage, filedialog, END, Message, RAISED
 from tkinter.ttk import Frame, Label, Button
 import meaningly as mn
+from PIL import ImageTk, Image
 
 
 # Splash screen
+class Splash(tk.Toplevel):
+    def __init__(self, parent):
+        tk.Toplevel.__init__(self, parent)
+        self.title("Loading")
+        loadphoto = ImageTk.PhotoImage(Image.open('assets/3147390.jpg').resize((400, 400)))
+        image_label = tk.Label(self, image=loadphoto)
+        image_label.image = loadphoto
+        image_label.pack()
 
+
+        ## required to make window show before the program gets to the mainloop
+        self.update()
 
 #Main app
 class UserInterface(Frame):
 
     def __init__(self):
         super().__init__()
+        self.master.withdraw()
+        splash = Splash(self)
         self.fileName = None
         self.listOfEntries = []
         self.listOfPhrases = []
@@ -19,6 +33,8 @@ class UserInterface(Frame):
 
         self.initUI()
         self.meaningly = mn.Meaningly()
+        splash.destroy()
+        self.master.deiconify()
 
     # Setting the filename
     def set_file(self, filename):
@@ -104,7 +120,7 @@ class UserInterface(Frame):
         lbl1 = Label(frame1, text="File", width=9)
         lbl1.pack(side=LEFT, padx=5, pady=5)
 
-        photo = PhotoImage(file=r"foldericon.png")
+        photo = PhotoImage(file=r"assets/foldericon.png")
         photo2 = photo.subsample(25, 25)
 
         entry1 = tk.Entry(frame1, highlightthickness=1)
@@ -158,8 +174,9 @@ class UserInterface(Frame):
 
 def main():
     root = Tk()
-    root.iconbitmap("letterm.ico")
+    root.iconbitmap("assets/letterm.ico")
     root.geometry("500x350+100+100")
+    root.withdraw()
     app = UserInterface()
     root.mainloop()
 

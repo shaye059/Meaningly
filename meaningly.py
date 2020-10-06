@@ -10,7 +10,7 @@ import seaborn as sns
 import docx
 
 
-def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold, rotation):
+def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold):
     plt.figure()
     corr = np.inner(textfeatures, sentencefeatures)
     x_labels = []
@@ -29,10 +29,10 @@ def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, 
         vmax=1,
         cmap="YlOrRd",
         square=True)
-    g.set_xticklabels(sentencelabels, rotation=rotation)
+    g.set_xticklabels(sentencelabels, rotation=45, ha='right')
     g.set_title("Semantic Textual Similarity")
     plt.tight_layout()
-    plt.subplots_adjust(left=0.5)
+    plt.subplots_adjust(left=0.5, bottom=0.3)
     plt.show()
 
 
@@ -81,7 +81,7 @@ class Meaningly:
     def run_and_plot(self, text_, sentences_, threshold_):
         text_embeddings_ = self.embed(text_)
         sentence_embeddings_ = self.embed(sentences_)
-        plot_similarity(text_, text_embeddings_, sentences_, sentence_embeddings_, threshold_, 0)
+        plot_similarity(text_, text_embeddings_, sentences_, sentence_embeddings_, threshold_)
 
     # TODO: split sentence at every ellipses, period, exclamation mark, and question mark
     def process_run_plot(self, file, sentences_to_compare, user_threshold, start_symbol=':'):
@@ -90,5 +90,5 @@ class Meaningly:
 
 
 # For quick testing without the GUI:
-"""meaningly = Meaningly()
-meaningly.process_run_plot(r'PathToSomeDocument', ["No, you didn't","I don't know"], 0)"""
+meaningly = Meaningly()
+meaningly.process_run_plot(r'C:/Users/spenc/Documents/Transcript.docx', ["No, you didn't","I don't know"], 0)
