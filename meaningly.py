@@ -96,5 +96,5 @@ class Meaningly:
 
 
 # For quick testing without the GUI:
-meaningly = Meaningly()
-meaningly.process_run_plot(r'C:/Users/spenc/Documents/Transcript.docx', ["No, you didn't", "I don't know"], 0)
+"""meaningly = Meaningly()
+meaningly.process_run_plot(r'C:/Users/spenc/Documents/Transcript.docx', ["No, you didn't", "I don't know"], 0)"""
