@@ -8,6 +8,7 @@ import pandas as pd
 import re
 import seaborn as sns
 import docx
+import nltk.data
 
 
 def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, threshold):
@@ -36,6 +37,8 @@ def plot_similarity(textlabels, textfeatures, sentencelabels, sentencefeatures, 
     plt.show()
 
 
+# TODO: add input paramter split_sen. Should be a boolean that determines whether or not paragraphs are split into
+#  sentences
 def process_file(file, start_symbol):
     try:
         doc = docx.Document(file)
@@ -44,6 +47,7 @@ def process_file(file, start_symbol):
 
     all_paras = doc.paragraphs
     filtered_paras = []
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
     # Remove the part of the sentence before the given symbol
     for para in all_paras:
@@ -51,11 +55,14 @@ def process_file(file, start_symbol):
             for i in range(len(para.text)):
                 if para.text[i] == start_symbol:
                     filtered_text = para.text[i + 2:]
-                    filtered_paras.append(filtered_text)
+                    filtered_text = tokenizer.tokenize(filtered_text)
+                    filtered_paras += filtered_text
+                    print(filtered_text)
                     break
         else:
-            filtered_paras.append(para.text)
+            filtered_paras += tokenizer.tokenize(para.text)
 
+    print(filtered_paras)
     return filtered_paras
 
 
@@ -71,7 +78,6 @@ class Meaningly:
         module_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
         self.model = hub.load(module_url)
         print("module %s loaded" % module_url)
-
 
     def embed(self, input_):
         return self.model(input_)
@@ -91,4 +97,4 @@ class Meaningly:
 
 # For quick testing without the GUI:
 meaningly = Meaningly()
-meaningly.process_run_plot(r'C:/Users/spenc/Documents/Transcript.docx', ["No, you didn't","I don't know"], 0)
+meaningly.process_run_plot(r'C:/Users/spenc/Documents/Transcript.docx', ["No, you didn't", "I don't know"], 0)
