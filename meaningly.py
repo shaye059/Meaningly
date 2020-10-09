@@ -57,12 +57,10 @@ def process_file(file, start_symbol):
                     filtered_text = para.text[i + 2:]
                     filtered_text = tokenizer.tokenize(filtered_text)
                     filtered_paras += filtered_text
-                    print(filtered_text)
                     break
         else:
             filtered_paras += tokenizer.tokenize(para.text)
 
-    print(filtered_paras)
     return filtered_paras
 
 
@@ -89,7 +87,6 @@ class Meaningly:
         sentence_embeddings_ = self.embed(sentences_)
         plot_similarity(text_, text_embeddings_, sentences_, sentence_embeddings_, threshold_)
 
-    # TODO: split sentence at every ellipses, period, exclamation mark, and question mark
     def process_run_plot(self, file, sentences_to_compare, user_threshold, start_symbol=':'):
         text = process_file(file, start_symbol)
         self.run_and_plot(text, sentences_to_compare, user_threshold)
