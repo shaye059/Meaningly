@@ -1,4 +1,4 @@
-# Sentence Encoder
+# Meaningly
 
 An API + GUI built on top of the Universal Sentence Encoder that lets the user enter sentences
 and find similar ones in a transcript. The user can add a custom threshold (between 0 and 1)
