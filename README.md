@@ -1,3 +1,6 @@
+*Note: This project was built as a tool for a McGill University research study to provide better
+transcript searchability.*
+
 # Meaningly
 
 A NLP search tool for querying coded research study transcripts and finding similar sentences. 
